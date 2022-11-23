@@ -8,14 +8,7 @@ import {Colors} from './src/constants';
 const App = () => {
   return (
     <Provider store={store}>
-      <SafeAreaView style={{flex: 1, backgroundColor: Colors.primary}}>
-        <StatusBar
-          translucent
-          backgroundColor={Colors.primary}
-          barStyle="light-content"
-        />
-        <RootNavigation />
-      </SafeAreaView>
+      <RootNavigation />
     </Provider>
   );
 };

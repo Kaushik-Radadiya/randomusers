@@ -6,6 +6,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../constants';
+import {StyleSheet, View} from 'react-native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -14,11 +15,10 @@ const TabBar = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          paddingTop: 10,
           backgroundColor: Colors.primary,
         },
-        tabBarActiveTintColor: Colors.lightRed,
-        tabBarInactiveTintColor: `${Colors.white}70`,
+        tabBarActiveTintColor: Colors.red,
+        tabBarInactiveTintColor: Colors.red,
       }}>
       <Tab.Screen
         name="Home"
@@ -26,11 +26,19 @@ const TabBar = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) => (
-            <Icon
-              name="home"
-              size={25}
-              color={focused ? Colors.lightRed : `${Colors.white}70`}
-            />
+            <View
+              style={[
+                styles.tabIcon,
+                {
+                  borderTopColor: focused ? Colors.red : Colors.transparent,
+                },
+              ]}>
+              <Icon
+                name={focused ? 'home' : 'home-outline'}
+                size={25}
+                color={Colors.red}
+              />
+            </View>
           ),
         }}
       />
@@ -40,11 +48,19 @@ const TabBar = () => {
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) => (
-            <Icon
-              name="heart"
-              size={25}
-              color={focused ? Colors.lightRed : `${Colors.white}70`}
-            />
+            <View
+              style={[
+                styles.tabIcon,
+                {
+                  borderTopColor: focused ? Colors.red : Colors.transparent,
+                },
+              ]}>
+              <Icon
+                name={focused ? 'star' : 'star-outline'}
+                size={25}
+                color={Colors.red}
+              />
+            </View>
           ),
         }}
       />
@@ -68,3 +84,13 @@ export const RootNavigation = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  tabIcon: {
+    borderTopWidth: 2,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

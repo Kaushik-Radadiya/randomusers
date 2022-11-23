@@ -1,22 +1,23 @@
 import React, {useState} from 'react';
 import {
   Alert,
+  Image,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {Colors} from '../../constants';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useDispatch} from 'react-redux';
 import {setLogin} from '../../redux/reducers/AuthReducer';
 import CustomTextField from '../../components/common/CustomTextField';
 import {validateEmail, validatePass} from '../../utils';
 
 const LoginScreen = () => {
-  const [userEmail, setUserEmail] = useState('reactnative@jetdevs.com');
-  const [userPassword, setUserPassword] = useState('jetdevs@123');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -56,68 +57,114 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleContainer}>
-        <Icon name={'login'} size={190} color={Colors.darkRed} />
-      </View>
-      <View style={styles.inputContainer}>
-        <View>
-          <CustomTextField
-            placeholder="Enter Email..."
-            onChangeText={e => setUserEmail(e)}
-            value={userEmail}
-            inputIcon="email"
-            inputIconColor={Colors.white}
-            placeholderTextColor={`${Colors.white}80`}
-            bWidth={emailError ? 1 : 0}
-            bColor={emailError ? Colors.error : Colors.transparent}
-          />
-          {emailError && (
-            <Text style={{color: Colors.error}}>Enter valid email address</Text>
-          )}
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <StatusBar translucent backgroundColor={Colors.primary} />
+      <View style={styles.container}>
+        <View style={styles.logoContainer}>
+          <View style={styles.logoImage}>
+            <Image
+              style={styles.logo}
+              source={require('../../assets/Logo.jpeg')}
+            />
+          </View>
         </View>
-        <View>
-          <CustomTextField
-            placeholder="Enter Password..."
-            onChangeText={e => setUserPassword(e)}
-            value={userPassword}
-            isPassword={showPassword}
-            iconName={
-              userPassword.length > 0 && (showPassword ? 'eye-off' : 'eye')
-            }
-            iconColor={`${Colors.white}50`}
-            onIconPress={() => setShowPassword(!showPassword)}
-            inputIcon="lock"
-            inputIconColor={Colors.white}
-            placeholderTextColor={`${Colors.white}80`}
-            bWidth={passwordError ? 1 : 0}
-            bColor={passwordError ? Colors.error : Colors.transparent}
-          />
-          {passwordError && (
-            <Text style={{color: Colors.error}}>Enter valid password</Text>
-          )}
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Login</Text>
         </View>
-      </View>
-      <TouchableOpacity
-        style={styles.submitContainer}
-        onPress={() => {
-          if (checkStrings()) {
-            validateUser();
+        <View style={styles.inputContainer}>
+          <View>
+            <CustomTextField
+              placeholder="Email"
+              onChangeText={e => setUserEmail(e)}
+              value={userEmail}
+              inputIcon="email-outline"
+              isError={emailError}
+            />
+            {emailError && (
+              <Text style={styles.errorText}>Enter valid email address</Text>
+            )}
+          </View>
+          <View>
+            <CustomTextField
+              placeholder="Password"
+              onChangeText={e => setUserPassword(e)}
+              value={userPassword}
+              isPassword={showPassword}
+              iconName={
+                userPassword.length > 0 && (showPassword ? 'eye-off' : 'eye')
+              }
+              iconColor={`${Colors.secondary}50`}
+              onIconPress={() => setShowPassword(!showPassword)}
+              inputIcon="lock-outline"
+              isError={passwordError}
+            />
+            {passwordError && (
+              <Text style={styles.errorText}>Enter valid password</Text>
+            )}
+          </View>
+        </View>
+        <TouchableOpacity
+          style={
+            !userEmail || !userPassword
+              ? styles.disabledSubmitContainer
+              : styles.submitContainer
           }
-        }}>
-        <Text style={styles.submitText}>Login</Text>
-      </TouchableOpacity>
-    </View>
+          disabled={!userEmail || !userPassword}
+          onPress={() => {
+            if (checkStrings()) {
+              validateUser();
+            }
+          }}>
+          <Text style={styles.submitText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaContainer: {
     flex: 1,
     backgroundColor: Colors.primary,
+  },
+  container: {
+    flex: 1,
+    marginVertical: 50,
+    marginHorizontal: 25,
+    borderRadius: 20,
+    backgroundColor: Colors.white,
     paddingHorizontal: 16,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 1,
+  },
+  logoContainer: {
+    position: 'absolute',
+    top: -20,
+    alignItems: 'center',
+    left: 0,
+    right: 0,
+  },
+  logoImage: {
+    backgroundColor: Colors.white,
+    borderRadius: 30,
+    padding: 5,
+    height: 60,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logo: {
+    height: 30,
+    width: 30,
   },
   titleContainer: {
     justifyContent: 'center',
@@ -125,23 +172,29 @@ const styles = StyleSheet.create({
     marginVertical: 100,
   },
   titleText: {
-    fontSize: 54,
-    color: Colors.lightRed,
+    fontSize: 32,
+    textTransform: 'uppercase',
+    color: Colors.black,
     fontWeight: 'bold',
   },
-  inputContainer: {
-    marginHorizontal: 24,
+  errorText: {
+    marginLeft: 5,
+    color: Colors.error,
+  },
+  disabledSubmitContainer: {
+    backgroundColor: Colors.secondary,
+    marginVertical: 24,
+    borderRadius: 5,
   },
   submitContainer: {
-    backgroundColor: Colors.transparent,
-    borderColor: Colors.darkRed,
-    borderWidth: 2,
-    margin: 24,
-    borderRadius: 50,
+    backgroundColor: Colors.red,
+    marginVertical: 24,
+    borderRadius: 5,
   },
   submitText: {
     color: Colors.white,
     fontSize: 20,
+    textTransform: 'uppercase',
     paddingVertical: 14,
     textAlign: 'center',
     fontWeight: 'bold',

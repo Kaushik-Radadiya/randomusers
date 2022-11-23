@@ -8,9 +8,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  StatusBar,
+  SafeAreaView,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialIcons';
 import {BASE_URL, Colors} from '../../constants';
 import axios from 'axios';
 import {
@@ -18,6 +20,7 @@ import {
   removeFavorite,
   setUser,
 } from '../../redux/reducers/UserReducer';
+import Header from '../../components/common/Header';
 
 const wait = timeout => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -106,35 +109,41 @@ const HomeScreen = () => {
             </View>
             <View style={styles.emailContainer}>
               <MaterialCommunityIcons
-                color={`${Colors.white}80`}
-                name="email"
-                size={20}
+                color={Colors.secondary}
+                name="mail-outline"
+                size={14}
               />
               <Text style={styles.emailText} numberOfLines={1}>
                 {item.email}
               </Text>
             </View>
-            <View style={styles.profileAge}>
-              <Text style={styles.ageText}>Age: {item.dob.age}</Text>
+            <View style={styles.locationContainer}>
+              <MaterialCommunityIcons
+                color={Colors.red}
+                name="location-pin"
+                size={14}
+              />
+              <Text style={styles.locationText} numberOfLines={1}>
+                {item?.location?.city}, {item?.location?.country}
+              </Text>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() =>
-              ifExists(item)
-                ? handleRemoveFavorite(item)
-                : handleAddFavorite(item)
-            }
-            activeOpacity={0.7}
-            style={[
-              styles.favoriteContainer,
-              {backgroundColor: exists ? Colors.white : Colors.secondary},
-            ]}>
-            <MaterialCommunityIcons
-              color={exists ? Colors.lightRed : Colors.white}
-              size={18}
-              name={exists ? 'heart' : 'heart-outline'}
-            />
-          </TouchableOpacity>
+          <View style={styles.favoriteContainer}>
+            <TouchableOpacity
+              onPress={() =>
+                ifExists(item)
+                  ? handleRemoveFavorite(item)
+                  : handleAddFavorite(item)
+              }
+              activeOpacity={0.7}
+              style={[styles.favoriteButton]}>
+              <MaterialCommunityIcons
+                color={Colors.red}
+                size={26}
+                name={exists ? 'star' : 'star-outline'}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -143,44 +152,51 @@ const HomeScreen = () => {
   const renderFooter = () => {
     return (
       <View style={styles.footer}>
-        <ActivityIndicator color={'white'} />
+        <ActivityIndicator />
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Random Users</Text>
-      <View style={styles.itemContainer}>
-        {loading ? (
-          <ActivityIndicator size="large" />
-        ) : (
-          <FlatList
-            data={users}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            onEndReached={loadMoreData}
-            onEndReachedThreshold={0.1}
-            ListFooterComponent={renderFooter}
-            refreshControl={
-              <RefreshControl
-                colors={Colors.white}
-                tintColor={Colors.white}
-                refreshing={refreshing}
-                onRefresh={onRefresh}
-              />
-            }
-          />
-        )}
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <StatusBar backgroundColor={Colors.white} />
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.itemContainer}>
+          {loading ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <FlatList
+              data={users}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+              onEndReached={loadMoreData}
+              onEndReachedThreshold={0.1}
+              ListFooterComponent={renderFooter}
+              refreshControl={
+                <RefreshControl
+                  colors={Colors.secondary}
+                  tintColor={Colors.secondary}
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                />
+              }
+            />
+          )}
+        </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
@@ -198,14 +214,23 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   itemView: {
-    borderRadius: 8,
-    margin: 10,
-    backgroundColor: Colors.red,
+    borderRadius: 10,
+    margin: 5,
+    marginLeft: 20,
+    backgroundColor: Colors.white,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
   },
   itemDataContainer: {
     flexDirection: 'row',
     flex: 1,
-    padding: 10,
   },
   detailContainer: {
     flex: 1,
@@ -213,54 +238,53 @@ const styles = StyleSheet.create({
   },
   profileImageContainer: {
     justifyContent: 'center',
+    marginLeft: -15,
   },
   profileImage: {
-    width: 100,
-    height: '100%',
-    borderRadius: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     borderColor: Colors.white,
     borderWidth: 2,
   },
   profileName: {
-    fontSize: 18,
+    fontSize: 16,
     paddingRight: 16,
-    color: Colors.white,
+    color: Colors.black,
     fontWeight: 'bold',
   },
   emailContainer: {
     flexDirection: 'row',
-    marginTop: 10,
     alignItems: 'center',
   },
   emailText: {
     fontSize: 14,
-    paddingLeft: 5,
-    color: Colors.white,
+    marginLeft: 2,
+    color: Colors.secondary,
+    fontWeight: '500',
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+  },
+  locationText: {
+    fontSize: 14,
+    color: Colors.red,
+    marginLeft: 2,
     fontWeight: '500',
   },
   favoriteContainer: {
-    position: 'absolute',
-    top: -10,
-    right: -10,
-    flexDirection: 'row',
-    padding: 2,
-    backgroundColor: Colors.secondary,
+    padding: 5,
+  },
+  favoriteButton: {
     borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     height: 30,
     width: 30,
   },
-  profileAge: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  ageText: {
-    fontSize: 14,
-    color: Colors.white,
-    fontWeight: '500',
-  },
+
   footer: {
     padding: 10,
     justifyContent: 'center',

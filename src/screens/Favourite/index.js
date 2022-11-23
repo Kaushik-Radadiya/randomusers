@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../../constants';
 import {removeFavorite} from '../../redux/reducers/UserReducer';
+import Header from '../../components/common/Header';
 
 const FavouriteScreen = () => {
   const {favorites} = useSelector(state => state.users);
@@ -39,66 +42,62 @@ const FavouriteScreen = () => {
                 {`${item.name.title} ${item.name.first} ${item.name.last}`}
               </Text>
             </View>
-            <View style={styles.emailContainer}>
-              <MaterialCommunityIcons
-                color={`${Colors.white}80`}
-                name="email"
-                size={20}
-              />
-              <Text style={styles.emailText} numberOfLines={1}>
-                {item.email}
-              </Text>
-            </View>
-            <View style={styles.profileAge}>
-              <Text style={styles.ageText}>Age: {item.dob.age}</Text>
-            </View>
           </View>
-          <TouchableOpacity
-            onPress={() => handleRemoveFavorite(item)}
-            activeOpacity={0.7}
-            style={[styles.favoriteContainer, {backgroundColor: Colors.white}]}>
-            <MaterialCommunityIcons
-              color={Colors.lightRed}
-              size={18}
-              name={'heart-remove'}
-            />
-          </TouchableOpacity>
+          <View style={styles.favoriteContainer}>
+            <TouchableOpacity
+              onPress={() => handleRemoveFavorite(item)}
+              activeOpacity={0.7}
+              style={[styles.favoriteButton]}>
+              <MaterialCommunityIcons
+                color={Colors.red}
+                size={26}
+                name="star"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Favorite</Text>
-      {favorites.length === 0 ? (
-        <View style={styles.noItemView}>
-          <MaterialCommunityIcons
-            color={Colors.red}
-            size={36}
-            name="playlist-remove"
-          />
-          <Text style={styles.emptyText}>Add a user to favorites list.</Text>
-        </View>
-      ) : (
-        <View style={styles.itemContainer}>
-          <FlatList
-            data={favorites}
-            keyExtractor={item =>
-              `${item.name.title} ${item.name.first} ${item.name.last}`
-            }
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      )}
-    </View>
+    <SafeAreaView style={styles.safeAreaContainer}>
+      <StatusBar backgroundColor={Colors.white} />
+      <View style={styles.container}>
+        <Header />
+        {favorites.length === 0 ? (
+          <View style={styles.noItemView}>
+            <MaterialCommunityIcons
+              color={Colors.red}
+              size={36}
+              name="playlist-remove"
+            />
+            <Text style={styles.emptyText}>Add a user to favorites list.</Text>
+          </View>
+        ) : (
+          <View style={styles.itemContainer}>
+            <FlatList
+              data={favorites}
+              keyExtractor={item =>
+                `${item.name.title} ${item.name.first} ${item.name.last}`
+              }
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default FavouriteScreen;
 
 const styles = StyleSheet.create({
+  safeAreaContainer: {
+    flex: 1,
+    backgroundColor: Colors.white,
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.primary,
@@ -113,71 +112,45 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     flex: 1,
-    marginHorizontal: 8,
+    // marginHorizontal: 8,
   },
   itemView: {
-    borderRadius: 8,
-    margin: 10,
-    backgroundColor: Colors.red,
+    marginVertical: 1,
+    backgroundColor: Colors.white,
   },
   itemDataContainer: {
     flexDirection: 'row',
     flex: 1,
-    padding: 10,
   },
   detailContainer: {
     flex: 1,
-    margin: 12,
+    justifyContent: 'center',
   },
   profileImageContainer: {
     justifyContent: 'center',
+    marginHorizontal: 10,
+    marginVertical: 5,
   },
   profileImage: {
-    width: 100,
-    height: '100%',
-    borderRadius: 10,
-    borderColor: Colors.white,
-    borderWidth: 2,
+    width: 40,
+    height: 40,
+    borderRadius: 25,
   },
   profileName: {
-    fontSize: 18,
+    fontSize: 16,
     paddingRight: 16,
-    color: Colors.white,
+    color: Colors.black,
     fontWeight: 'bold',
   },
-  emailContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  emailText: {
-    fontSize: 14,
-    paddingLeft: 5,
-    color: Colors.white,
-    fontWeight: '500',
-  },
   favoriteContainer: {
-    position: 'absolute',
-    top: -10,
-    right: -10,
-    flexDirection: 'row',
-    padding: 2,
-    backgroundColor: Colors.secondary,
-    borderRadius: 20,
+    padding: 5,
+  },
+  favoriteButton: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     height: 30,
     width: 30,
-  },
-  profileAge: {
-    flexDirection: 'row',
-    marginTop: 10,
-    alignItems: 'center',
-  },
-  ageText: {
-    fontSize: 14,
-    color: Colors.white,
-    fontWeight: '500',
   },
   noItemView: {
     flex: 1,
