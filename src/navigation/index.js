@@ -6,7 +6,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Colors} from '../constants';
-import {Text, View} from 'react-native';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -18,8 +17,8 @@ const TabBar = () => {
           paddingTop: 10,
           backgroundColor: Colors.primary,
         },
-        tabBarActiveTintColor: Colors.white,
-        tabBarInactiveTintColor: `${Colors.black}70`,
+        tabBarActiveTintColor: Colors.lightRed,
+        tabBarInactiveTintColor: `${Colors.white}70`,
       }}>
       <Tab.Screen
         name="Home"
@@ -30,7 +29,7 @@ const TabBar = () => {
             <Icon
               name="home"
               size={25}
-              color={focused ? Colors.white : `${Colors.black}70`}
+              color={focused ? Colors.lightRed : `${Colors.white}70`}
             />
           ),
         }}
@@ -44,7 +43,7 @@ const TabBar = () => {
             <Icon
               name="heart"
               size={25}
-              color={focused ? Colors.white : `${Colors.black}70`}
+              color={focused ? Colors.lightRed : `${Colors.white}70`}
             />
           ),
         }}
