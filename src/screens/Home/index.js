@@ -160,8 +160,6 @@ const HomeScreen = () => {
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
             showsVerticalScrollIndicator={false}
-            // onRefresh={() => onRefresh()}
-            // refreshing={refreshing}
             onEndReached={loadMoreData}
             onEndReachedThreshold={0.1}
             ListFooterComponent={renderFooter}
